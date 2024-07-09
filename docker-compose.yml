@@ -1,0 +1,25 @@
+services:
+  mongo:
+    container_name: deadline-mongo
+    image: mongo:latest
+    user: 1000:1000
+    ports:
+      - "27017:27017"
+    volumes:
+      - /mnt/altair/repository/deadline/DeadlineDatabase10:/data/db
+    restart: unless-stopped
+
+  webservice:
+    container_name: deadline-webservice
+    user: 1000:1000
+    build: 
+      context: .
+      dockerfile: deadline-client.Dockerfile
+    ports:
+      - "8082:8082"
+    volumes:
+      - /mnt/altair/repository/deadline/DeadlineRepository10:/mnt/DeadlineRepository10
+    entrypoint: ./deadlinewebservice
+    restart: unless-stopped
+    depends_on:
+      - mongo
